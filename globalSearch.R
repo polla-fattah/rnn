@@ -27,7 +27,7 @@ harmonySearch <- function(wieghtsSize){
   ## calculate the optimum solution using Harmony Search algorithm
   resultHS <- HS(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
                  maxIter=100, rangeVar, PAR, HMCR, bandwith)
-  optWieghts <<- resultHS
+  optWieghts_harmonySearch <<- resultHS
   print(fitnessFunction(resultHS))
 }
 
@@ -37,7 +37,7 @@ defEvo <- function(wieghtsSize){
   lower <- rep(-1, wieghtsSize)
   dd <- DEoptim(fn=fitnessFunction, lower=lower, upper=upper, 
                 DEoptim.control( storepopfrom = 1, itermax = 50, trace=F))
-  optWieghts <<- dd$optim$bestmem
+  optWieghts_defEvo <<- dd$optim$bestmem
   print(fitnessFunction(dd$optim$bestmem))
 }
 
@@ -53,7 +53,11 @@ prticleSwarmOpt <- function(wieghtsSize){
   
   ## calculate the optimum solution using Particle Swarm Optimization Algorithm
   resultPSO <- PSO(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
-                   maxIter=100, rangeVar, Vmax, ci, cg, w)
+                   maxIter=50, rangeVar, Vmax, ci, cg, w)
+  
+  optWieghts_prticleSwarmOpt <<- resultPSO
+  
+  print(fitnessFunction(resultPSO))
   
 }
 
@@ -65,4 +69,8 @@ antLoinOpt <- function(wieghtsSize){
   ## calculate the optimum solution using Ant Lion Optimizer 
   resultALO <- ALO(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
                    maxIter=100, rangeVar)
+  
+  optWieghts <<- resultALO
+  
+  print(fitnessFunction(resultALO))
 }

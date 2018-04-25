@@ -1,7 +1,7 @@
 require(pROC)
 source('globalSearch.R')
 
-#AUC <- function(class1, class2) multiclass.roc(class1, class2)$auc[1]
+AUC <- function(class1, class2) multiclass.roc(class1, class2)$auc[1]
 
 
 
@@ -24,8 +24,10 @@ main <- function(){
   initializeVars(file, lableCol = 5)
   wieghtsSize = inputSize * hiddenSize + hiddenSize * hiddenSize + hiddenSize * outSize
   #print(wieghtsSize)
+  #defEvo(wieghtsSize)
   #harmonySearch(wieghtsSize)
-  defEvo(wieghtsSize)
+  prticleSwarmOpt(wieghtsSize)
+  #antLoinOpt(wieghtsSize)
   
 }
 
