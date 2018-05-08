@@ -9,40 +9,63 @@ errorRate <- function(cl1, cl2){
   return (tr)
 }
 
-fitnessFunction <- function(wieghts){
-  map = mapVectorToNueral(wieghts)
+fitnessFunctionRnn <- function(wieghts){
+  map = mapVectorForRnn(wieghts)
   result <- rnnClassify(map$hiddenWieghts, map$recurrentWieghts, map$outputWieghts, rep(0, hiddenSize))
   
   return(errorRate(result, label))
 }
 
+fitnessFunctionLstm <- function(wieghts){
+  map = mapVectorForLstm(wieghts)
+    
+  result <- lstmClassify(map$Wi, map$Ui, map$Wf, map$Uf, map$Wo, map$Uo, map$Wc, map$Uc, map$outputWieghts)
+  
+  return(errorRate(result, label))
+}
 
-harmonySearch <- function(wieghtsSize){
+harmonySearch <- function(wieghtsSize, nural = "lstm"){
   numVar <- wieghtsSize
   rangeVar <- matrix(c(-1, 1), nrow=2)
   PAR <- 0.1
   HMCR <- 0.95
   bandwith <- 0.15
+  fitnessFunction <- ""
+  if(nural == "lstm") 
+    fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
   
   ## calculate the optimum solution using Harmony Search algorithm
-  resultHS <- HS(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
-                 maxIter=100, rangeVar, PAR, HMCR, bandwith)
+  resultHS <- HS(fitnessFunction, optimType="MIN", numVar, numPopulation=10, 
+                 maxIter=10, rangeVar, PAR, HMCR, bandwith)
   optWieghts_harmonySearch <<- resultHS
   print(fitnessFunction(resultHS))
+  return(resultHS)
+  
 }
 
-defEvo <- function(wieghtsSize){
+defEvo <- function(wieghtsSize, nural = "lstm"){
   
   upper <- rep(1, wieghtsSize)
   lower <- rep(-1, wieghtsSize)
+  fitnessFunction <- ""
+  if(nural == "lstm") 
+    fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
+  
   dd <- DEoptim(fn=fitnessFunction, lower=lower, upper=upper, 
                 DEoptim.control( storepopfrom = 1, itermax = 50, trace=F))
   optWieghts_defEvo <<- dd$optim$bestmem
   print(fitnessFunction(dd$optim$bestmem))
+  
+  return(dd$optim$bestmem)
+  
 }
 
 
-prticleSwarmOpt <- function(wieghtsSize){
+prticleSwarmOpt <- function(wieghtsSize, nural = "lstm"){
 
   Vmax <- 2
   ci <- 1.5
@@ -50,27 +73,44 @@ prticleSwarmOpt <- function(wieghtsSize){
   w <- 0.7
   numVar <- wieghtsSize
   rangeVar <- matrix(c(-1,1), nrow=2)
+  fitnessFunction <- ""
+  if(nural == "lstm") 
+    fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
+  
   
   ## calculate the optimum solution using Particle Swarm Optimization Algorithm
-  resultPSO <- PSO(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
-                   maxIter=50, rangeVar, Vmax, ci, cg, w)
+  resultPSO <- PSO(fitnessFunction, optimType="MIN", numVar, numPopulation=10, 
+                   maxIter=20, rangeVar, Vmax, ci, cg, w)
   
   optWieghts_prticleSwarmOpt <<- resultPSO
   
   print(fitnessFunction(resultPSO))
+  return(resultPSO)
   
 }
 
-antLoinOpt <- function(wieghtsSize){
+antLoinOpt <- function(wieghtsSize, nural = "lstm"){
   ## Define parameter 
   numVar <- wieghtsSize
   rangeVar <- matrix(c(-1,1), nrow=2)
   
+  fitnessFunction <- ""
+    if(nural == "lstm") 
+      fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
+  
   ## calculate the optimum solution using Ant Lion Optimizer 
   resultALO <- ALO(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
-                   maxIter=100, rangeVar)
+                   maxIter=50, rangeVar)
   
   optWieghts <<- resultALO
   
   print(fitnessFunction(resultALO))
+  return(optWieghts)
+  
 }
+
+
