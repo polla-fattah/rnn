@@ -3,6 +3,9 @@ require(DEoptim)
 
 source('neural.R')
 
+iterations <- 100
+population <- 50
+
 errorRate <- function(cl1, cl2){
   f <- table(cl1 == cl2)
   tr <- f[names(f)=='FALSE'] / length(cl1)
@@ -37,8 +40,8 @@ harmonySearch <- function(wieghtsSize, nural = "lstm"){
     fitnessFunction <- fitnessFunctionRnn
   
   ## calculate the optimum solution using Harmony Search algorithm
-  resultHS <- HS(fitnessFunction, optimType="MIN", numVar, numPopulation=10, 
-                 maxIter=10, rangeVar, PAR, HMCR, bandwith)
+  resultHS <- HS(fitnessFunction, optimType="MIN", numVar, numPopulation=population, 
+                 maxIter=iterations, rangeVar, PAR, HMCR, bandwith)
   optWieghts_harmonySearch <<- resultHS
   print(fitnessFunction(resultHS))
   return(resultHS)
@@ -56,7 +59,7 @@ defEvo <- function(wieghtsSize, nural = "lstm"){
     fitnessFunction <- fitnessFunctionRnn
   
   dd <- DEoptim(fn=fitnessFunction, lower=lower, upper=upper, 
-                DEoptim.control( storepopfrom = 1, itermax = 50, trace=F))
+                DEoptim.control( storepopfrom = 1, itermax = iterations, trace=F))
   optWieghts_defEvo <<- dd$optim$bestmem
   print(fitnessFunction(dd$optim$bestmem))
   
@@ -81,8 +84,8 @@ prticleSwarmOpt <- function(wieghtsSize, nural = "lstm"){
   
   
   ## calculate the optimum solution using Particle Swarm Optimization Algorithm
-  resultPSO <- PSO(fitnessFunction, optimType="MIN", numVar, numPopulation=10, 
-                   maxIter=20, rangeVar, Vmax, ci, cg, w)
+  resultPSO <- PSO(fitnessFunction, optimType="MIN", numVar, numPopulation=population, 
+                   maxIter=iterations, rangeVar, Vmax, ci, cg, w)
   
   optWieghts_prticleSwarmOpt <<- resultPSO
   
@@ -103,8 +106,8 @@ antLoinOpt <- function(wieghtsSize, nural = "lstm"){
     fitnessFunction <- fitnessFunctionRnn
   
   ## calculate the optimum solution using Ant Lion Optimizer 
-  resultALO <- ALO(fitnessFunction, optimType="MIN", numVar, numPopulation=20, 
-                   maxIter=50, rangeVar)
+  resultALO <- ALO(fitnessFunction, optimType="MIN", numVar, numPopulation=population, 
+                   maxIter=iterations, rangeVar)
   
   optWieghts <<- resultALO
   

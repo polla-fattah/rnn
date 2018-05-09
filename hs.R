@@ -12,6 +12,7 @@ AUC <- function(class1, class2){
   return (result)
 }
 
+
 initializeVars <- function(dataFile, lableCol = 1, hSize = 10){
   rawData <<- read.csv(dataFile)
   
@@ -50,15 +51,20 @@ folds <- function (optimizer = harmonySearch, nural="lstm"){
     results[1 + i] <<- sum(label== pridict)/length(label)
     
   }
-  print(sum(results) / 10)
+  return(sum(results) / 10)
 }
 
 
 main <- function(){
-
+  foldResults <<- c()
   file <- "wdbc.csv" #file.choose()
   initializeVars(file, lableCol = 1)
-  folds()
+  for(i in 1:3){
+    iterations <<- 3 * i
+    foldResults[i] <<- folds()
+  }
+  plot(1:3, foldResults)
+  
   
   #print(wieghtsSize)
   #defEvo(wieghtsSize)
