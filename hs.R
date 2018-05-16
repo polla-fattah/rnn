@@ -59,11 +59,11 @@ main <- function(){
   foldResults <<- c()
   file <- "wdbc.csv" #file.choose()
   initializeVars(file, lableCol = 1)
-  for(i in 1:3){
-    iterations <<- 3 * i
+  for(i in 1:1){
+    iterations <<- 300 * i
     foldResults[i] <<- folds()
   }
-  plot(1:3, foldResults)
+  plot(1:1, foldResults)
   
   
   #print(wieghtsSize)
@@ -75,3 +75,4 @@ main <- function(){
 }
 
 main()
+
