@@ -1,3 +1,6 @@
+if("sigmoid" %in% rownames(installed.packages()) == FALSE) {
+  install.packages("sigmoid")
+}
 require(sigmoid)
 
 mapVectorForRnn <- function(wieghts) {

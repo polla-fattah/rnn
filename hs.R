@@ -1,4 +1,9 @@
+if("pROC" %in% rownames(installed.packages()) == FALSE) {
+  install.packages("pROC")
+}
 require(pROC)
+
+
 source('globalSearch.R')
 
 AUC <- function(class1, class2){

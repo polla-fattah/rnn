@@ -1,5 +1,17 @@
+if("metaheuristicOpt" %in% rownames(installed.packages()) == FALSE) {
+  install.packages("metaheuristicOpt")
+}
+if("DEoptim" %in% rownames(installed.packages()) == FALSE) {
+  install.packages("DEoptim")
+}
+
 require(metaheuristicOpt)
 require(DEoptim)
+
+
+
+
+
 
 source('neural.R')
 
