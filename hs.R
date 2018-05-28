@@ -18,7 +18,7 @@ AUC <- function(class1, class2){
 }
 
 
-initializeVars <- function(dataFile, lableCol = 1, hSize = 10){
+initializeVars <- function(dataFile, lableCol = 1, hSize = 30){
   rawData <<- read.csv(dataFile)
   
   globalDataset <<- rawData[-lableCol]
@@ -41,10 +41,10 @@ folds <- function (optimizer = harmonySearch, nural="lstm"){
   }
     
   
-  testNo = floor(length(globalDataset[,1]) /10)
+  testNo = floor(length(globalDataset[,1]) /5)
   testSample = 1:testNo
   results <<- c()
-  for (i in 0:9) {
+  for (i in 0:5) {
     dataset <<- globalDataset[-(testSample + testNo * i),]
     label <<- globalLabel[-(testSample + testNo * i)]
     
@@ -56,16 +56,14 @@ folds <- function (optimizer = harmonySearch, nural="lstm"){
     results[1 + i] <<- sum(label== pridict)/length(label)
     
   }
-  return(sum(results) / 10)
+  return(sum(results) / 5)
 }
-
-
 main <- function(){
   foldResults <<- c()
   file <- "wdbc.csv" #file.choose()
   initializeVars(file, lableCol = 1)
   for(i in 1:1){
-    iterations <<- 300 * i
+    iterations <<- 3 * i
     foldResults[i] <<- folds()
   }
   plot(1:1, foldResults)
