@@ -15,8 +15,8 @@ require(DEoptim)
 
 source('neural.R')
 
-iterations <- 100
-population <- 50
+iterations <- 30
+population <- 30
 
 errorRate <- function(cl1, cl2){
   f <- table(cl1 == cl2)
@@ -124,6 +124,50 @@ antLoinOpt <- function(wieghtsSize, nural = "lstm"){
   optWieghts <<- resultALO
   
   print(fitnessFunction(resultALO))
+  return(optWieghts)
+  
+}
+
+SinCosOpt <- function(wieghtsSize, nural = "lstm"){
+  ## Define parameter 
+  numVar <- wieghtsSize
+  rangeVar <- matrix(c(-1,1), nrow=2)
+  
+  fitnessFunction <- ""
+  if(nural == "lstm") 
+    fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
+  
+  ## calculate the optimum solution using Ant Lion Optimizer 
+  resultSCA <<- SCA(fitnessFunction, optimType="MIN", numVar, numPopulation=population, 
+                    maxIter=iterations, rangeVar)
+  
+  optWieghts <<- resultSCA
+  
+  print(fitnessFunction(resultSCA))
+  return(optWieghts)
+  
+}
+
+grayWolfOpt <- function(wieghtsSize, nural = "lstm"){
+  ## Define parameter 
+  numVar <- wieghtsSize
+  rangeVar <- matrix(c(-1,1), nrow=2)
+  
+  fitnessFunction <- ""
+  if(nural == "lstm") 
+    fitnessFunction <- fitnessFunctionLstm
+  else
+    fitnessFunction <- fitnessFunctionRnn
+  
+  ## calculate the optimum solution using Ant Lion Optimizer 
+  resultGWO <<- GWO(fitnessFunction, optimType="MIN", numVar, numPopulation=population, 
+                    maxIter=iterations, rangeVar)
+  
+  optWieghts <<- resultGWO
+  
+  print(fitnessFunction(resultGWO))
   return(optWieghts)
   
 }
