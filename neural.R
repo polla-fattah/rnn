@@ -88,8 +88,6 @@ mapVectorForLstm <- function(wieghts) {
 }
 
 
-
-
 rnnClassify <- function(hiddenWieghts, recurrentWieghts, outputWieghts, recurrent){
   result <- c()
   
@@ -112,25 +110,30 @@ rnnClassify <- function(hiddenWieghts, recurrentWieghts, outputWieghts, recurren
 }
 
 lstmClassify <- function(Wi, Ui, Wf, Uf, Wo, Uo, Wc, Uc, outputWieghts){
+
   result <- c()
-  Ht_1 <- rep(0, hiddenSize)
-  ct_1 <- rep(0, hiddenSize)
   
   for(index in 1:length(dataset[,1])){
+    Ht_1 <- rep(0, hiddenSize)
+    ct_1 <- rep(0, hiddenSize)
     
-    X <- matrix(as.double(dataset[index,]), ncol = 1)
+    XX <- matrix(as.double(dataset[index,]), ncol = 1)
+    XX <- XX[-(1:2)]
     
-    it <<-  sigmoid(Wi %*% X + Ui %*% Ht_1)
-    ft <-  sigmoid(Wf %*% X + Uf %*% Ht_1)
-    ot <-  sigmoid(Wo %*% X + Uo %*% Ht_1)
-    ct_ <-  tanh(Wc %*% X + Uc %*% Ht_1)
+    for (tt in seq(1,170, 10)){
+      X <- XX[tt:(tt+9)]
+
+      it <-  sigmoid(Wi %*% X + Ui %*% Ht_1)
+      ft <-  sigmoid(Wf %*% X + Uf %*% Ht_1)
+      ot <-  sigmoid(Wo %*% X + Uo %*% Ht_1)
+      ct_ <- tanh(Wc %*% X + Uc %*% Ht_1)
     
-    ct <- ft * ct_1 + it * ct_
-    ht <- ot * tanh(ct)
+      ct <- ft * ct_1 + it * ct_
+      ht <- ot * tanh(ct)
     
-    ct_1 <- ct
-    Ht_1 <- ht
-    
+      ct_1 <- ct
+      Ht_1 <- ht
+    }
     
     output <- outputWieghts %*% ht
     output <- ifelse(output < 0.5, 0, 1)

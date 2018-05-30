@@ -9,10 +9,6 @@ require(metaheuristicOpt)
 require(DEoptim)
 
 
-
-
-
-
 source('neural.R')
 
 iterations <- 30
@@ -171,5 +167,4 @@ grayWolfOpt <- function(wieghtsSize, nural = "lstm"){
   return(optWieghts)
   
 }
-
 

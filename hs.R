@@ -3,7 +3,6 @@ if("pROC" %in% rownames(installed.packages()) == FALSE) {
 }
 require(pROC)
 
-
 source('globalSearch.R')
 
 AUC <- function(class1, class2){
@@ -18,8 +17,10 @@ AUC <- function(class1, class2){
 }
 
 
-initializeVars <- function(dataFile, lableCol = 1, hSize = 30){
+initializeVars <- function(dataFile, lableCol = 1, hSize = 30, dataCat="Cancer"){
   rawData <<- read.csv(dataFile)
+  
+  if(dataCat == "seizure") rawData <<- rawData[!duplicated(rawData$V),]
   
   globalDataset <<- rawData[-lableCol]
   globalLabel <<- rawData[lableCol]
@@ -27,6 +28,8 @@ initializeVars <- function(dataFile, lableCol = 1, hSize = 30){
   
   inputSize <<- length(globalDataset)
   outSize <<- ceiling(log2(length(table(globalLabel))))
+  
+  if(dataCat == "seizure") inputSize <<- 10
   
   hiddenSize <<- hSize
 }
@@ -44,7 +47,8 @@ folds <- function (optimizer = harmonySearch, nural="lstm"){
   testNo = floor(length(globalDataset[,1]) /5)
   testSample = 1:testNo
   results <<- c()
-  for (i in 0:5) {
+  
+  for (i in 0:5){
     dataset <<- globalDataset[-(testSample + testNo * i),]
     label <<- globalLabel[-(testSample + testNo * i)]
     
@@ -58,23 +62,21 @@ folds <- function (optimizer = harmonySearch, nural="lstm"){
   }
   return(sum(results) / 5)
 }
+
+
 main <- function(){
+  running <<- FALSE
   foldResults <<- c()
-  file <- "wdbc.csv" #file.choose()
-  initializeVars(file, lableCol = 1)
-  for(i in 1:1){
-    iterations <<- 3 * i
+  file <- "seizure.csv" #file.choose()
+  
+  initializeVars(file, lableCol = 3, dataCat="seizure")
+  
+  for(i in 1:10){
+    iterations <<- 5 * i
     foldResults[i] <<- folds()
   }
-  plot(1:1, foldResults)
-  
-  
-  #print(wieghtsSize)
-  #defEvo(wieghtsSize)
-  #harmonySearch(wieghtsSize)
-  #prticleSwarmOpt(wieghtsSize)
-  #antLoinOpt(wieghtsSize)
-  
+  plot(1:10, foldResults)
+  running <<- TRUE
 }
 
 main()
